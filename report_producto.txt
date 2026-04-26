@@ -1,0 +1,82 @@
+📊 REPORTE DE CALIDAD DE DATOS - COLUMNA 'producto'
+============================================================
+
+🔎 RESUMEN GENERAL
+------------------------------------------------------------
+Total registros: 266347
+Valores únicos: 68
+NaN: 7648
+Inválidos: 3844
+Total problemáticos: 11492
+
+🟡 TOP VALORES
+------------------------------------------------------------
+producto
+Libre_Inversion                  3900
+ACUERDO PAGO CAST                3897
+MASTER PESOS                     3895
+FFMM                             3889
+LIBRAAANZA                       3884
+CREDITO consumo                  3878
+NANOCRéDITO                      3871
+VISA ALIADAS  EMPRESARIAL BIM    3867
+INSOLVENCIA                      3865
+VEHICULOS                        3861
+Tarjeta PEN<71 EXC-DESEM2        3860
+VH PRENDA                        3859
+CX FIJO                          3858
+VISA                             3854
+EX LIBRANZA                      3854
+VH SIN PRENDA                    3851
+COLEEEEEGIO                      3847
+VH CONFINANCIERA                 3847
+COLEGIO                          3847
+Sobregiros                       3846
+Name: count, dtype: int64
+
+🔴 PROBLEMAS DE ENCODING
+------------------------------------------------------------
+3       CRÃÆÃâdiTO Hipotecar 
+4              crédito VehiCulÂr
+26      TARJETA DE CRÃÆÃâdiTo
+32      TARJETA DE CRÃÆÃâdiTo
+40      CRÃÆÃâdiTO Hipotecar 
+53             crédito VehiCulÂr
+64             crédito VehiCulÂr
+71             crédito VehiCulÂr
+74      TARJETA DE CRÃÆÃâdiTo
+98    VEHÃCULO MOVIL SIN PRENDA
+Name: producto, dtype: str
+
+🟠 CARACTERES RAROS
+------------------------------------------------------------
+3      CRÃÆÃâdiTO Hipotecar 
+4             crédito VehiCulÂr
+26     TARJETA DE CRÃÆÃâdiTo
+27    Tarjeta PEN<71 EXC-DESEM2
+32     TARJETA DE CRÃÆÃâdiTo
+40     CRÃÆÃâdiTO Hipotecar 
+53            crédito VehiCulÂr
+56                  NANOCRéDITO
+64            crédito VehiCulÂr
+65                     GENERÍCA
+Name: producto, dtype: str
+
+🔵 LONGITUD
+------------------------------------------------------------
+count    258699.000000
+mean         11.947020
+std           5.787288
+min           1.000000
+25%           8.000000
+50%          11.000000
+75%          15.000000
+max          29.000000
+Name: producto, dtype: float64
+
+🟢 TOKENS
+------------------------------------------------------------
+[('VH', 15400), ('PRENDA', 15305), ('EX', 15209), ('TARJETA', 15137), ('ACUERDO', 11500), ('PAGO', 11500), ('SIN', 11446), ('ADELANTO', 11245), ('VISA', 7721), ('COLEGIO', 7690), ('LIBRANZA', 7682), ('CAST', 7682), ('TC', 7674), ('CONSUMO', 7626), ('BIM', 7622), ('CRÃ\x83Æ\x92Ã\x86ÂDITO', 7618), ('LIBRE', 7608), ('RETAIL', 7599), ('CREDITO', 7592), ('CX', 7583)]
+
+============================================================
+FIN DEL REPORTE
