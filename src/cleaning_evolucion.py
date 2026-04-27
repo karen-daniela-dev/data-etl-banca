@@ -275,8 +275,8 @@ def map_producto(text: str) -> str:
 
 
 def limpiar_producto(df: pd.DataFrame) -> pd.DataFrame:
-    df["producto_clean"] = df["producto"].apply(normalize_text)
-    df["producto_limpio"] = df["producto_clean"].apply(map_producto)
+    df["producto_normalizado"] = df["producto"].apply(normalize_text)
+    df["producto_limpio"] = df["producto_normalizado"].apply(map_producto)
 
     return df
 
@@ -329,10 +329,10 @@ if __name__ == "__main__":
     # ───────── 3. LIMPIEZA ─────────
     df = limpiar_producto(df)
 
-    # ───────── Resultados ─────────
+    # Resultados para hacer seguimiento e ir modificando con REGEX es clave TOP 20 DE 'OTROS' para ir estandarizando todo, de a grupos ─────────
 
     print("\n🔍 MUESTRA (ANTES vs DESPUÉS)")
-    print(df[["producto", "producto_clean", "producto_limpio"]].head(20))
+    print(df[["producto", "producto_normalizado", "producto_limpio"]].head(20))
 
     print("\n🔢 Valores únicos (producto_limpio):")
     print(df["producto_limpio"].nunique())
@@ -343,7 +343,7 @@ if __name__ == "__main__":
     #segunda parte . revisar categoria 'OTROS'
     print("\n🔍 TOP 20 DE 'OTROS':")
     print(
-        df[df["producto_limpio"] == "OTROS"]["producto_clean"]
+        df[df["producto_limpio"] == "OTROS"]["producto_normalizado"]
         .value_counts()
         .head(20)
 )
@@ -363,6 +363,9 @@ if __name__ == "__main__":
     metrics_clean = compute_producto_metrics(df_eval)
     diagnose_producto(metrics_clean)
     generate_report(metrics_clean, "report_producto_limpio.txt")
+    
+    # Lo anterior  ajusto la columna producto, ve a comparar el excel 
+    # 3 columnas: producto, producto normalizado, y producto limpio donde ya esta caegorizado
     
   
 
