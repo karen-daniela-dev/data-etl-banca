@@ -3,8 +3,7 @@ import numpy as np
 import re
 import unicodedata
 from collections import Counter
-from openpyxl import Workbook
-from openpyxl.worksheet.table import Table, TableStyleInfo
+
 
 
 # ─────────────────────────────────────────
@@ -68,7 +67,6 @@ def compute_producto_metrics(df: pd.DataFrame) -> dict:
         if token
     ]
 
-    from collections import Counter
     top_tokens = Counter(all_tokens).most_common(20)
 
     return {
@@ -153,6 +151,21 @@ def generate_report(metrics: dict, output_path="report_producto.txt"):
         f.write("🟢 TOKENS\n")
         f.write("-"*60 + "\n")
         f.write(str(metrics["top_tokens"]) + "\n\n")
+        
+        #Numeros
+        f.write("\n💰 CALIDAD DE COLUMNAS NUMÉRICAS\n")
+        f.write("-"*60 + "\n")
+
+        numeric_cols = ["SALDO_CAPITAL_MES", "PAGO_MINIMO"]
+
+        for col in numeric_cols:
+            nulls = df[col].isna().sum()
+            validos = df[col].notna().sum()
+
+            f.write(f"\n📌 {col}\n")
+            f.write(f"Valores válidos: {validos}\n")
+            f.write(f"Valores inválidos (NaN tras limpieza): {nulls}\n")
+            f.write(f"% pérdida: {round((nulls/len(df))*100, 2)}%\n")
 
         f.write("="*60 + "\nFIN DEL REPORTE\n")
         
@@ -281,41 +294,28 @@ def map_producto(text: str) -> str:
 
 
 
-
-
 def limpiar_producto(df: pd.DataFrame) -> pd.DataFrame:
     df["producto_normalizado"] = df["PRODUCTO"].apply(normalize_text)
     df["producto_limpio"] = df["producto_normalizado"].apply(map_producto)
 
     return df
 
-def export_to_excel(df):
-    file_path = "data/EVOLUCION_LIMPIO.xlsx"
+def clean_numeric_columns(df):
+    
+    numeric_cols = ["SALDO_CAPITAL_MES", "PAGO_MINIMO"]
 
-    with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
-        df.to_excel(writer, index=False, sheet_name="datos")
-
-        ws = writer.book["datos"]
-
-        # rango de la tabla
-        rows, cols = df.shape
-        table_range = f"A1:{chr(65+cols-1)}{rows+1}"
-
-        table = Table(displayName="TablaProductos", ref=table_range)
-
-        style = TableStyleInfo(
-            name="TableStyleMedium9",
-            showFirstColumn=False,
-            showLastColumn=False,
-            showRowStripes=True,
-            showColumnStripes=False,
+    for col in numeric_cols:
+        df[col] = (
+            df[col]
+            .astype(str)
+            .str.replace("$", "", regex=False)
+            .str.replace(".", "", regex=False)
+            .str.strip()
         )
 
-        table.tableStyleInfo = style
-        ws.add_table(table)
+        df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    print("\n✅ Excel con tabla creado:", file_path)
-
+    return df
 
 
 
@@ -358,13 +358,10 @@ if __name__ == "__main__":
         .head(20)
 )
     
-    # ───4. GUARDAR LIMPIO en Excel por revision por tabla,filtros ─────
-    df.to_csv("data/EVOLUCION_LIMPIO.csv", index=False, sep=";")
-    print("\n✅ Archivo limpio guardado")
+
     
     
     # ───────── 5. DIAGNÓSTICO LIMPIO ─────────
-
    
     df_eval = df.copy()
     df_eval["producto"] = df_eval["producto_limpio"]
@@ -377,7 +374,10 @@ if __name__ == "__main__":
     # Lo anterior  ajusto la columna producto, ve a comparar el excel 
     # 3 columnas: producto, producto normalizado, y producto limpio donde ya esta caegorizado
     
-  
+    df = clean_numeric_columns(df)
+        # ───4. GUARDAR LIMPIO en Excel por revision por tabla,filtros ─────
+    df.to_csv("data/EVOLUCION_LIMPIO.csv", index=False, sep=";")
+    print("\n✅ Archivo limpio guardado")
 
 
   

@@ -78,5 +78,18 @@ Name: PRODUCTO, dtype: float64
 ------------------------------------------------------------
 [('VH', 15400), ('PRENDA', 15305), ('EX', 15209), ('TARJETA', 15137), ('ACUERDO', 11500), ('PAGO', 11500), ('SIN', 11446), ('ADELANTO', 11245), ('VISA', 7721), ('COLEGIO', 7690), ('LIBRANZA', 7682), ('CAST', 7682), ('TC', 7674), ('CONSUMO', 7626), ('BIM', 7622), ('CRÃ\x83Æ\x92Ã\x86ÂDITO', 7618), ('LIBRE', 7608), ('RETAIL', 7599), ('CREDITO', 7592), ('CX', 7583)]
 
+
+💰 CALIDAD DE COLUMNAS NUMÉRICAS
+------------------------------------------------------------
+
+📌 SALDO_CAPITAL_MES
+Valores válidos: 266347
+Valores inválidos (NaN tras limpieza): 0
+% pérdida: 0.0%
+
+📌 PAGO_MINIMO
+Valores válidos: 266347
+Valores inválidos (NaN tras limpieza): 0
+% pérdida: 0.0%
 ============================================================
 FIN DEL REPORTE
