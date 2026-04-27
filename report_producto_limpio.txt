@@ -1,0 +1,58 @@
+📊 REPORTE DE CALIDAD DE DATOS - COLUMNA 'producto'
+============================================================
+
+🔎 RESUMEN GENERAL
+------------------------------------------------------------
+Total registros incluyendo  vacios o mal escritos : 266347
+Valores únicos: 16
+NaN: 0
+Inválidos: 0
+Total problemáticos: 0
+
+🟡 TOP VALORES
+------------------------------------------------------------
+producto
+CREDITO         79988
+VEHICULO        42016
+DESCONOCIDO     30360
+ACUERDO_PAGO    18941
+HIPOTECARIO     15139
+LIBRANZA        11566
+EDUCATIVO       11537
+COMERCIAL       11429
+ADELANTO        11245
+MICROCREDITO     7643
+BENEFICIOS       7490
+INVERSION        3889
+LEGAL            3865
+EMPRESARIAL      3755
+CONSUMO          3748
+GARANTIA         3736
+Name: count, dtype: int64
+
+🔴 PROBLEMAS DE ENCODING
+------------------------------------------------------------
+Series([], Name: producto, dtype: str)
+
+🟠 CARACTERES RAROS
+------------------------------------------------------------
+Series([], Name: producto, dtype: str)
+
+🔵 LONGITUD
+------------------------------------------------------------
+count    266347.000000
+mean          8.753160
+std           1.830938
+min           5.000000
+25%           7.000000
+50%           8.000000
+75%          11.000000
+max          12.000000
+Name: producto, dtype: float64
+
+🟢 TOKENS
+------------------------------------------------------------
+[('CREDITO', 79988), ('VEHICULO', 42016), ('DESCONOCIDO', 30360), ('ACUERDO_PAGO', 18941), ('HIPOTECARIO', 15139), ('LIBRANZA', 11566), ('EDUCATIVO', 11537), ('COMERCIAL', 11429), ('ADELANTO', 11245), ('MICROCREDITO', 7643), ('BENEFICIOS', 7490), ('INVERSION', 3889), ('LEGAL', 3865), ('EMPRESARIAL', 3755), ('CONSUMO', 3748), ('GARANTIA', 3736)]
+
+============================================================
+FIN DEL REPORTE

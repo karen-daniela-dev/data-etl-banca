@@ -315,16 +315,21 @@ def export_to_excel(df):
 # MAIN
 # ─────────────────────────────────────────
 if __name__ == "__main__":
+    
+    # ───────── 1. CARGA ORIGINAL ─────────
     df = load_data("data/EVOLUCION.txt")
-    # diagnóstico
-    metrics = compute_producto_metrics(df)
-    diagnose_producto(metrics)
-    generate_report(metrics)
+    
+    
+    # ───────── 2. DIAGNÓSTICO ORIGINAL ─────────
+    print("\n📊 ANALISIS DATA ORIGINAL")
+    metrics_original = compute_producto_metrics(df)
+    diagnose_producto(metrics_original)
+    generate_report(metrics_original, "report_producto_original.txt")
 
-    # limpieza
+    # ───────── 3. LIMPIEZA ─────────
     df = limpiar_producto(df)
 
-    # ───────── VALIDACIÓN ─────────
+    # ───────── Resultados ─────────
 
     print("\n🔍 MUESTRA (ANTES vs DESPUÉS)")
     print(df[["producto", "producto_clean", "producto_limpio"]].head(20))
@@ -335,7 +340,7 @@ if __name__ == "__main__":
     print("\n📊 Distribución:")
     print(df["producto_limpio"].value_counts())
     
-    #segunda parte . revisar 'OTROS'
+    #segunda parte . revisar categoria 'OTROS'
     print("\n🔍 TOP 20 DE 'OTROS':")
     print(
         df[df["producto_limpio"] == "OTROS"]["producto_clean"]
@@ -343,11 +348,21 @@ if __name__ == "__main__":
         .head(20)
 )
     
-   # ───────── GUARDAR ARCHIVO ─────────
-
+    # ───4. GUARDAR LIMPIO en Excel por revision por tabla,filtros ─────
     df.to_csv("data/EVOLUCION_LIMPIO.csv", index=False, sep=";")
+    print("\n✅ Archivo limpio guardado")
+    
+    
+    # ───────── 5. DIAGNÓSTICO LIMPIO ─────────
 
-    print("\n✅ Archivo guardado como: data/EVOLUCION_LIMPIO.csv")
+   
+    df_eval = df.copy()
+    df_eval["producto"] = df_eval["producto_limpio"]
+
+    print("\n📊 ANALISIS DATA LIMPIA")
+    metrics_clean = compute_producto_metrics(df_eval)
+    diagnose_producto(metrics_clean)
+    generate_report(metrics_clean, "report_producto_limpio.txt")
     
   
 
