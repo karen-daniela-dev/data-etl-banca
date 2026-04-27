@@ -19,12 +19,21 @@ def load_data(path: str) -> pd.DataFrame:
     except UnicodeDecodeError:
         df = pd.read_csv(path, sep="\t", encoding="latin1")
     
+        # 🔥 NORMALIZAR COLUMNAS (CLAVE PARA EVITAR ERRORES)
+    df.columns = (
+        df.columns
+        .str.strip()
+        .str.upper()
+        .str.replace(" ", "_")
+    )
+
+    
     return df
 
 
 
 def compute_producto_metrics(df: pd.DataFrame) -> dict:
-    col = df["producto"]
+    col = df["PRODUCTO"]
 
     # Nulos
     null_real = col.isna().sum()
@@ -77,7 +86,7 @@ def compute_producto_metrics(df: pd.DataFrame) -> dict:
 
 def diagnose_producto(metrics: dict):
     print("\n" + "="*50)
-    print("📊 DIAGNÓSTICO DE COLUMNA: producto")
+    print("📊 DIAGNÓSTICO DE COLUMNA: PRODUCTO")
     print("="*50)
     
     print(f"Total Registros: {metrics['total_registros']}")
@@ -108,7 +117,7 @@ def diagnose_producto(metrics: dict):
 def generate_report(metrics: dict, output_path="report_producto.txt"):
     with open(output_path, "w", encoding="utf-8") as f:
 
-        f.write("📊 REPORTE DE CALIDAD DE DATOS - COLUMNA 'producto'\n")
+        f.write("📊 REPORTE DE CALIDAD DE DATOS - COLUMNA 'PRODUCTO'\n")
         f.write("="*60 + "\n\n")
 
         # RESUMEN
@@ -275,7 +284,7 @@ def map_producto(text: str) -> str:
 
 
 def limpiar_producto(df: pd.DataFrame) -> pd.DataFrame:
-    df["producto_normalizado"] = df["producto"].apply(normalize_text)
+    df["producto_normalizado"] = df["PRODUCTO"].apply(normalize_text)
     df["producto_limpio"] = df["producto_normalizado"].apply(map_producto)
 
     return df
@@ -318,6 +327,7 @@ if __name__ == "__main__":
     
     # ───────── 1. CARGA ORIGINAL ─────────
     df = load_data("data/EVOLUCION.txt")
+    print(df.columns.tolist()) # ver columnas
     
     
     # ───────── 2. DIAGNÓSTICO ORIGINAL ─────────
@@ -332,7 +342,7 @@ if __name__ == "__main__":
     # Resultados para hacer seguimiento e ir modificando con REGEX es clave TOP 20 DE 'OTROS' para ir estandarizando todo, de a grupos ─────────
 
     print("\n🔍 MUESTRA (ANTES vs DESPUÉS)")
-    print(df[["producto", "producto_normalizado", "producto_limpio"]].head(20))
+    print(df[["PRODUCTO", "producto_normalizado", "producto_limpio"]].head(20))
 
     print("\n🔢 Valores únicos (producto_limpio):")
     print(df["producto_limpio"].nunique())
