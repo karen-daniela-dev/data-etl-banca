@@ -3,7 +3,7 @@
 
 🔎 RESUMEN GENERAL
 ------------------------------------------------------------
-Total registros: 266347
+Total registros incluyendo  vacios o mal escritos : 266347
 Valores únicos: 68
 NaN: 7648
 Inválidos: 3844

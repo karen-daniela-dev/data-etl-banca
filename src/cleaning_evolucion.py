@@ -1,7 +1,11 @@
 import pandas as pd
 import numpy as np
 import re
+import unicodedata
 from collections import Counter
+from openpyxl import Workbook
+from openpyxl.worksheet.table import Table, TableStyleInfo
+
 
 # ─────────────────────────────────────────
 # 1. CARGA DE DATOS
@@ -142,12 +146,210 @@ def generate_report(metrics: dict, output_path="report_producto.txt"):
         f.write(str(metrics["top_tokens"]) + "\n\n")
 
         f.write("="*60 + "\nFIN DEL REPORTE\n")
+        
+        
+        
+        
+# LIMPIAR TEXTO BASE 
+def normalize_text(text: str) -> str:
+    if pd.isna(text):
+        return None
+
+    text = str(text)
+    
+    try:
+        # 1. corregir encoding básico (fallback)
+        text = text.encode('latin1', errors='ignore').decode('utf-8', errors='ignore')
+    except:
+        pass
+
+    # 2. mayúsculas
+    text = text.upper()
+
+    # 3. quitar tildes
+    text = unicodedata.normalize('NFKD', text)
+    text = text.encode('ASCII', 'ignore').decode('utf-8')
+
+    # 4. eliminar caracteres raros
+    text = re.sub(r"[^A-Z0-9\s_]", " ", text)
+    # 4.5 reemplazar _
+    text = text.replace("_", " ")
+
+    # 5. limpiar espacios
+    text = re.sub(r"[^A-Z0-9\s_]", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    
+
+    return text if text else None
+
+#Regex . detectar patrones
+def map_producto(text: str) -> str:
+        # PROTECCIÓN TOTAL
+    if pd.isna(text):
+        return "DESCONOCIDO"
+
+    text = str(text).strip()
+
+    if text in ["", "0", "NULL"]:
+        return "DESCONOCIDO"
+
+    # 🔴 CREDITO (incluye tarjetas, TC, CX)
+    if re.search(r"\b(LIBRE INVERSION|CARTERA|ROTATIVO|SOBREGIROS|SOBREGRO|SOBREGIR|PRESTAMOS|PRESTAMO|LIBRE INVERSION|SOBREGIRO|CREDITO|CRED|CX|TC|TARJETA|VISA|MASTER)\b", text):
+        return "CREDITO"
+
+    # 🏠 HIPOTECARIO
+    if re.search(r"FONDAVIVIENDA|HIPOTEC", text):
+        return "HIPOTECARIO"
+
+    # 🚗 VEHICULO
+    if re.search(r"(SIN PRENDA|VEHICULO MOVIL SIN PRENDA|CRDITO VEHICULR|VEHICULO_SIN_PRENDA|CRDITO VEHICULR|VEHICULOS|VEHICULO|MOTO|SIN PRENDAVEHIC|SIN PRENDA|VH)", text):
+        return "VEHICULO"
+
+    # 💳 LIBRANZA
+    if re.search(r"LIBRA+NZA", text):
+        return "LIBRANZA"
+
+    # 🛒 CONSUMO
+    if re.search(r"CONSUMO", text):
+        return "CONSUMO"
+
+    # 🧾 ACUERDOS / CASTIGADOS
+    if re.search(r"ACUERDO|CAST", text):
+        return "ACUERDO_PAGO"
+
+    # 🏫 EDUCATIVO
+    if re.search(r"COLE+GIO", text):
+        return "EDUCATIVO"
+
+    # 💰 ADELANTOS
+    if re.search(r"ADELANTO", text):
+        return "ADELANTO"
+    
+    
+    
+    
+    #siguientes categorias segun el top inicio
+    
+    
+        # 🔹 INVERSION
+    if re.search(r"FFMM", text):
+        return "INVERSION"
+
+    # 🔹 MICROCREDITO
+    if re.search(r"NANO", text):
+        return "MICROCREDITO"
+
+    # 🔹 COMERCIAL
+    if re.search(r"(VENTAS|RETAIL|COMERCIO)", text):
+        return "COMERCIAL"
+
+    # 🔹 LEGAL
+    if re.search(r"INSOLVENCIA", text):
+        return "LEGAL"
+
+    # 🔹 BASURA → DESCONOCIDO
+    if re.search(r"(GENERC?|GENERIC|M PRIVADA|M COMPARTIDA|MARCAS)", text):
+        return "DESCONOCIDO"
+    #otro grupo 
+    # 🔹 EMPRESARIAL
+    if re.search(r"PYME", text):
+        return "EMPRESARIAL"
+
+    # 🔹 GARANTIA
+    if re.search(r"FNG", text):
+        return "GARANTIA"
+
+    # 🔹 BENEFICIOS
+    if re.search(r"CLUB", text):
+        return "BENEFICIOS"
+
+    # 🔹 NORMALIZACION → ACUERDO
+    if re.search(r"NORMALIZACION", text):
+        return "ACUERDO_PAGO"
+
+    # ⚠️ OTROS
+    return "OTROS"
+
+
+
+
+
+def limpiar_producto(df: pd.DataFrame) -> pd.DataFrame:
+    df["producto_clean"] = df["producto"].apply(normalize_text)
+    df["producto_limpio"] = df["producto_clean"].apply(map_producto)
+
+    return df
+
+def export_to_excel(df):
+    file_path = "data/EVOLUCION_LIMPIO.xlsx"
+
+    with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False, sheet_name="datos")
+
+        ws = writer.book["datos"]
+
+        # rango de la tabla
+        rows, cols = df.shape
+        table_range = f"A1:{chr(65+cols-1)}{rows+1}"
+
+        table = Table(displayName="TablaProductos", ref=table_range)
+
+        style = TableStyleInfo(
+            name="TableStyleMedium9",
+            showFirstColumn=False,
+            showLastColumn=False,
+            showRowStripes=True,
+            showColumnStripes=False,
+        )
+
+        table.tableStyleInfo = style
+        ws.add_table(table)
+
+    print("\n✅ Excel con tabla creado:", file_path)
+
+
+
+
+
 # ─────────────────────────────────────────
 # MAIN
 # ─────────────────────────────────────────
 if __name__ == "__main__":
     df = load_data("data/EVOLUCION.txt")
+    # diagnóstico
     metrics = compute_producto_metrics(df)
-
     diagnose_producto(metrics)
     generate_report(metrics)
+
+    # limpieza
+    df = limpiar_producto(df)
+
+    # ───────── VALIDACIÓN ─────────
+
+    print("\n🔍 MUESTRA (ANTES vs DESPUÉS)")
+    print(df[["producto", "producto_clean", "producto_limpio"]].head(20))
+
+    print("\n🔢 Valores únicos (producto_limpio):")
+    print(df["producto_limpio"].nunique())
+
+    print("\n📊 Distribución:")
+    print(df["producto_limpio"].value_counts())
+    
+    #segunda parte . revisar 'OTROS'
+    print("\n🔍 TOP 20 DE 'OTROS':")
+    print(
+        df[df["producto_limpio"] == "OTROS"]["producto_clean"]
+        .value_counts()
+        .head(20)
+)
+    
+   # ───────── GUARDAR ARCHIVO ─────────
+
+    df.to_csv("data/EVOLUCION_LIMPIO.csv", index=False, sep=";")
+
+    print("\n✅ Archivo guardado como: data/EVOLUCION_LIMPIO.csv")
+    
+  
+
+
+  
