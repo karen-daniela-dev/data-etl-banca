@@ -365,7 +365,7 @@ if __name__ == "__main__":
     # ───────── 5. DIAGNÓSTICO LIMPIO ─────────
    
     df_eval = df.copy()
-    df_eval["producto"] = df_eval["producto_limpio"]
+    df_eval["PRODUCTO"] = df_eval["producto_limpio"]
 
     print("\n📊 ANALISIS DATA LIMPIA")
     metrics_clean = compute_producto_metrics(df_eval)
