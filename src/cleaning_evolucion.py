@@ -47,7 +47,7 @@ def compute_producto_metrics(df: pd.DataFrame) -> dict:
     top_values = col.value_counts().head(20)
 
     # Encoding
-    encoding_pattern = r"[ÃÂ�]"
+    encoding_pattern = r"[ÃÂ�Â]"
     encoding_issues = col[col.astype(str).str.contains(encoding_pattern, regex=True, na=False)]
 
     # Caracteres raros
@@ -112,7 +112,7 @@ def diagnose_producto(metrics: dict):
     print(metrics["top_tokens"])
 
 
-def generate_report(metrics: dict, output_path="report_producto.txt"):
+def generate_report(metrics: dict, df: pd.DataFrame, output_path="report_producto.txt"):
     with open(output_path, "w", encoding="utf-8") as f:
 
         f.write("📊 REPORTE DE CALIDAD DE DATOS - COLUMNA 'PRODUCTO'\n")
@@ -308,9 +308,10 @@ def clean_numeric_columns(df):
         df[col] = (
             df[col]
             .astype(str)
-            .str.replace("$", "", regex=False)
-            .str.replace(".", "", regex=False)
-            .str.strip()
+            .str.replace(r"[^\d]", "", regex=True)  #  elimina $, puntos, espacios todo
+            # .str.replace("$", "", regex=False)
+            # .str.replace(".", "", regex=False)
+            # .str.strip()
         )
 
         df[col] = pd.to_numeric(df[col], errors="coerce")
@@ -334,7 +335,7 @@ if __name__ == "__main__":
     print("\n📊 ANALISIS DATA ORIGINAL")
     metrics_original = compute_producto_metrics(df)
     diagnose_producto(metrics_original)
-    generate_report(metrics_original, "report_producto_original.txt")
+    generate_report(metrics_original,df, "report_producto_original.txt")
 
     # ───────── 3. LIMPIEZA ─────────
     df = limpiar_producto(df)
@@ -369,7 +370,7 @@ if __name__ == "__main__":
     print("\n📊 ANALISIS DATA LIMPIA")
     metrics_clean = compute_producto_metrics(df_eval)
     diagnose_producto(metrics_clean)
-    generate_report(metrics_clean, "report_producto_limpio.txt")
+    generate_report(metrics_clean, df_eval,"report_producto_limpio.txt")
     
     # Lo anterior  ajusto la columna producto, ve a comparar el excel 
     # 3 columnas: producto, producto normalizado, y producto limpio donde ya esta caegorizado

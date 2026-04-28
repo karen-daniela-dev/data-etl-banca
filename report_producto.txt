@@ -1,4 +1,4 @@
-📊 REPORTE DE CALIDAD DE DATOS - COLUMNA 'producto'
+📊 REPORTE DE CALIDAD DE DATOS - COLUMNA 'PRODUCTO'
 ============================================================
 
 🔎 RESUMEN GENERAL
@@ -11,7 +11,7 @@ Total problemáticos: 11492
 
 🟡 TOP VALORES
 ------------------------------------------------------------
-producto
+PRODUCTO
 Libre_Inversion                  3900
 ACUERDO PAGO CAST                3897
 MASTER PESOS                     3895
@@ -46,7 +46,7 @@ Name: count, dtype: int64
 71             crédito VehiCulÂr
 74      TARJETA DE CRÃÆÃâdiTo
 98    VEHÃCULO MOVIL SIN PRENDA
-Name: producto, dtype: str
+Name: PRODUCTO, dtype: str
 
 🟠 CARACTERES RAROS
 ------------------------------------------------------------
@@ -60,7 +60,7 @@ Name: producto, dtype: str
 56                  NANOCRéDITO
 64            crédito VehiCulÂr
 65                     GENERÍCA
-Name: producto, dtype: str
+Name: PRODUCTO, dtype: str
 
 🔵 LONGITUD
 ------------------------------------------------------------
@@ -72,11 +72,12 @@ min           1.000000
 50%          11.000000
 75%          15.000000
 max          29.000000
-Name: producto, dtype: float64
+Name: PRODUCTO, dtype: float64
 
 🟢 TOKENS
 ------------------------------------------------------------
 [('VH', 15400), ('PRENDA', 15305), ('EX', 15209), ('TARJETA', 15137), ('ACUERDO', 11500), ('PAGO', 11500), ('SIN', 11446), ('ADELANTO', 11245), ('VISA', 7721), ('COLEGIO', 7690), ('LIBRANZA', 7682), ('CAST', 7682), ('TC', 7674), ('CONSUMO', 7626), ('BIM', 7622), ('CRÃ\x83Æ\x92Ã\x86ÂDITO', 7618), ('LIBRE', 7608), ('RETAIL', 7599), ('CREDITO', 7592), ('CX', 7583)]
 
-============================================================
-FIN DEL REPORTE
+
+💰 CALIDAD DE COLUMNAS NUMÉRICAS
+------------------------------------------------------------
